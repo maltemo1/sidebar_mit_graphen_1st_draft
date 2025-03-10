@@ -110,6 +110,8 @@ app.layout = html.Div([
             dbc.Col(sidebar, width=3),
             dbc.Col(html.Div([
                 html.H1("Graph wird hier angezeigt"),
+                # Hier wird der Graph angezeigt, immer
+                dcc.Graph(id='handel_graph'),
                 # Dropdown nur anzeigen, wenn die URL "/monatlicher-handelsverlauf" enthält
                 html.Div(id='dropdown-container')
             ]), width=9)
@@ -134,7 +136,7 @@ def display_dropdown(pathname):
     else:
         return None  # Dropdown nur anzeigen, wenn die URL "/monatlicher-handelsverlauf" ist
 
-# Callback, um den Graphen für „Gesamter Export-, Import- und Handelsvolumen-Verlauf Deutschlands“ anzuzeigen
+# Callback, um den Graphen zu aktualisieren und immer anzuzeigen, abhängig von der URL
 @app.callback(
     Output('handel_graph', 'figure'),
     [Input('url', 'pathname'), Input('jahr_dropdown', 'value')]
