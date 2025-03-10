@@ -18,7 +18,7 @@ def create_nav_structure():
     return {
         "Überblick über Deutschlands Handel": {
             "Gesamtüberblick seit 2008 bis 2024": {
-                "Gesamter Export-, Import- und Handelsvolumen-Verlauf Deutschlands": "#"
+                "Gesamter Export-, Import- und Handelsvolumen-Verlauf Deutschlands": "/gesamt-export-import-handelsvolumen"
             },
             "Überblick nach bestimmtem Jahr": {
                 "Monatlicher Handelsverlauf": "#",
@@ -91,6 +91,7 @@ sidebar = html.Div([
 
 # Layout für die Dash-App
 app.layout = html.Div([
+    dcc.Location(id='url', refresh=False),  # Location für URL-Überwachung
     dbc.Container([
         dbc.Row([
             dbc.Col(sidebar, width=3),
@@ -102,48 +103,51 @@ app.layout = html.Div([
     ])
 ])
 
-# Callback-Funktion, um den Graphen anzuzeigen
+# Callback, um den Graphen anzuzeigen, basierend auf der URL
 @app.callback(
     Output('handel_graph', 'figure'),
-    [Input('handel_graph', 'id'), Input('sidebar', 'n_clicks')]
+    [Input('url', 'pathname')]
 )
-def update_graph(_):
-    fig = go.Figure()
+def update_graph(pathname):
+    if pathname == "/gesamt-export-import-handelsvolumen":
+        fig = go.Figure()
 
-    # Linien für Export, Import und Handelsvolumen
-    for col, name, color in zip(
-        ['gesamt_export', 'gesamt_import', 'gesamt_handelsvolumen'],
-        ['Exportvolumen', 'Importvolumen', 'Gesamthandelsvolumen'],
-        ['#1f77b4', '#ff7f0e', '#2ca02c']
-    ):
-        fig.add_trace(go.Scatter(
-            x=df_gesamt_deutschland['Jahr'],
-            y=df_gesamt_deutschland[col],
-            mode='lines+markers',
-            name=name,
-            line=dict(width=2, color=color),
-            hovertemplate=f'<b>{name}</b><br>Jahr: %{{x}}<br>Wert: %{{y:,.0f}} €'
-        ))
+        # Linien für Export, Import und Handelsvolumen
+        for col, name, color in zip(
+            ['gesamt_export', 'gesamt_import', 'gesamt_handelsvolumen'],
+            ['Exportvolumen', 'Importvolumen', 'Gesamthandelsvolumen'],
+            ['#1f77b4', '#ff7f0e', '#2ca02c']
+        ):
+            fig.add_trace(go.Scatter(
+                x=df_gesamt_deutschland['Jahr'],
+                y=df_gesamt_deutschland[col],
+                mode='lines+markers',
+                name=name,
+                line=dict(width=2, color=color),
+                hovertemplate=f'<b>{name}</b><br>Jahr: %{{x}}<br>Wert: %{{y:,.0f}} €'
+            ))
 
-    # Berechnung der maximalen Y-Achse für Tick-Werte
-    max_value = df_gesamt_deutschland[['gesamt_export', 'gesamt_import', 'gesamt_handelsvolumen']].values.max()
-    tick_step = 500e9  # 500 Mrd als Schrittgröße
-    tickvals = np.arange(0, max_value + tick_step, tick_step)
+        # Berechnung der maximalen Y-Achse für Tick-Werte
+        max_value = df_gesamt_deutschland[['gesamt_export', 'gesamt_import', 'gesamt_handelsvolumen']].values.max()
+        tick_step = 500e9  # 500 Mrd als Schrittgröße
+        tickvals = np.arange(0, max_value + tick_step, tick_step)
 
-    # Layout-Anpassungen
-    fig.update_layout(
-        title='Entwicklung von Export, Import und Handelsvolumen',
-        xaxis_title='Jahr',
-        yaxis_title='Wert in €',
-        yaxis=dict(
-            tickformat=',',
-            tickvals=tickvals,
-            ticktext=[f"{val/1e9:.0f} Mrd" for val in tickvals]
-        ),
-        legend=dict(title='Kategorie', bgcolor='rgba(255,255,255,0.7)')
-    )
+        # Layout-Anpassungen
+        fig.update_layout(
+            title='Entwicklung von Export, Import und Handelsvolumen',
+            xaxis_title='Jahr',
+            yaxis_title='Wert in €',
+            yaxis=dict(
+                tickformat=',',
+                tickvals=tickvals,
+                ticktext=[f"{val/1e9:.0f} Mrd" for val in tickvals]
+            ),
+            legend=dict(title='Kategorie', bgcolor='rgba(255,255,255,0.7)')
+        )
 
-    return fig
+        return fig
+    else:
+        return {}  # Leeres Diagramm, wenn die URL nicht passt
 
 if __name__ == "__main__":
     app.run_server(debug=True)
