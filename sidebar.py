@@ -110,18 +110,29 @@ app.layout = html.Div([
             dbc.Col(sidebar, width=3),
             dbc.Col(html.Div([
                 html.H1("Graph wird hier angezeigt"),
-                dcc.Dropdown(
-                    id='jahr_dropdown',
-                    options=[{'label': str(j), 'value': j} for j in sorted(df_gesamt_deutschland_monthly['Jahr'].unique())],
-                    value=2024,  # Standardwert
-                    clearable=False,
-                    style={'width': '50%'}
-                ),
-                dcc.Graph(id='handel_graph')  # Der Graph wird hier angezeigt
+                # Dropdown nur anzeigen, wenn die URL "/monatlicher-handelsverlauf" enthält
+                html.Div(id='dropdown-container')
             ]), width=9)
         ])
     ])
 ])
+
+# Callback, um das Dropdown für Jahr nur für den monatlichen Handelsverlauf anzuzeigen
+@app.callback(
+    Output('dropdown-container', 'children'),
+    [Input('url', 'pathname')]
+)
+def display_dropdown(pathname):
+    if pathname == "/monatlicher-handelsverlauf":
+        return dcc.Dropdown(
+            id='jahr_dropdown',
+            options=[{'label': str(j), 'value': j} for j in sorted(df_gesamt_deutschland_monthly['Jahr'].unique())],
+            value=2024,  # Standardwert
+            clearable=False,
+            style={'width': '50%'}
+        )
+    else:
+        return None  # Dropdown nur anzeigen, wenn die URL "/monatlicher-handelsverlauf" ist
 
 # Callback, um den Graphen für „Gesamter Export-, Import- und Handelsvolumen-Verlauf Deutschlands“ anzuzeigen
 @app.callback(
