@@ -144,7 +144,7 @@ def update_graph(pathname, year_selected):
                 mode='lines+markers',
                 name=name,
                 line=dict(width=2, color=color),
-                hovertemplate=f'<b>{name}</b><br>Jahr: %{{x}}<br>Wert: %{{y:,.0f}} €'
+                hovertemplate=f'<b>{name}</b><br>Jahr: %{{x}}<br>Wert: %{{y:,.0f}} €<extra></extra>'
             ))
 
         # Berechnung der maximalen Y-Achse für Tick-Werte
@@ -184,7 +184,7 @@ def update_graph(pathname, year_selected):
                 mode='lines+markers',
                 name=name,
                 line=dict(width=2, color=color),
-                hovertemplate=f'<b>{name}</b><br>Monat: %{{x}}<br>Wert: %{{y:,.0f}} €'
+                hovertemplate=f'<b>{name}</b><br>Monat: %{{x}}<br>Wert: %{{y:,.0f}} €<extra></extra>'
             ))
 
         # Maximale Werte bestimmen
