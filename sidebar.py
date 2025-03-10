@@ -44,37 +44,12 @@ def create_nav_structure():
                 "Top 10 Export- und Importwaren": "#",
                 "Top 4 Waren nach Differenz zum Vorjahr": "#",
                 "Top 4 Waren nach Wachstum zum Vorjahr": "#"
-            },
-            "Überblick nach bestimmter Ware": {
-                "Gesamter Export- und Importverlauf der Ware mit Deutschland": "#"
-            },
-            "Überblick nach bestimmtem Jahr und Ware": {
-                "Monatlicher Verlauf von Export- und Importwerten für die angegebene Ware im Jahr": "#"
-            },
-            "Überblick nach bestimmtem Zeitraum und Waren": {
-                "Export- und Importverlauf (jährlich) bestimmter Waren für ein bestimmtes Land": "#",
-                "Export- und Importverlauf (jährlich) einer bestimmten Ware für bestimmte Länder": "#"
             }
         },
         "Warenanalyse": {
             "Gesamtüberblick seit 2008 bis 2024": {
                 "Gesamter Export- und Importverlauf der Ware": "#",
                 "Deutschlands Top 5 Export- und Importländer der Ware": "#"
-            },
-            "Überblick mit mehreren Waren über bestimmten Zeitraum": {
-                "Gesamter Export- und Importverlauf der Waren (jährliche Werte)": "#",
-                "Gesamter Export- und Importverlauf der Waren (monatliche Werte)": "#"
-            },
-            "Überblick nach bestimmtem Jahr": {
-                "Ranking der Ware im Vergleich zu anderen Waren": "#",
-                "Monatlicher Export- und Importvolumen-Verlauf der Ware": "#"
-            },
-            "Überblick nach bestimmtem Land": {
-                "Gesamter Export- und Importverlauf der Ware von bzw. nach Deutschland": "#"
-            },
-            "Überblick nach bestimmtem Zeitraum und Land und Waren": {
-                "Export- und Importverlauf (jährlich) mehrerer Waren für ein bestimmtes Land": "#",
-                "Export- und Importverlauf (jährlich) einer bestimmten Ware für bestimmte Länder": "#"
             }
         }
     }
