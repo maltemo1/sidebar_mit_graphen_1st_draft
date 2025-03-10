@@ -110,6 +110,13 @@ app.layout = html.Div([
             dbc.Col(sidebar, width=3),
             dbc.Col(html.Div([
                 html.H1("Graph wird hier angezeigt"),
+                dcc.Dropdown(
+                    id='jahr_dropdown',
+                    options=[{'label': str(j), 'value': j} for j in sorted(df_gesamt_deutschland_monthly['Jahr'].unique())],
+                    value=2024,  # Standardwert
+                    clearable=False,
+                    style={'width': '50%'}
+                ),
                 dcc.Graph(id='handel_graph')  # Der Graph wird hier angezeigt
             ]), width=9)
         ])
@@ -119,9 +126,9 @@ app.layout = html.Div([
 # Callback, um den Graphen für „Gesamter Export-, Import- und Handelsvolumen-Verlauf Deutschlands“ anzuzeigen
 @app.callback(
     Output('handel_graph', 'figure'),
-    [Input('url', 'pathname')]
+    [Input('url', 'pathname'), Input('jahr_dropdown', 'value')]
 )
-def update_graph(pathname):
+def update_graph(pathname, year_selected):
     if pathname == "/gesamt-export-import-handelsvolumen":
         fig = go.Figure()
 
@@ -162,11 +169,9 @@ def update_graph(pathname):
 
     # Callback für den monatlichen Handelsverlauf
     elif pathname == "/monatlicher-handelsverlauf":
-        fig = go.Figure()
-
-        # Dropdown für die Auswahl des Jahres
-        year_selected = 2024  # Standardwert (du kannst dies auch interaktiv gestalten)
         df_year_monthly = df_gesamt_deutschland_monthly[df_gesamt_deutschland_monthly['Jahr'] == year_selected]
+
+        fig = go.Figure()
 
         for col, name, color in zip(
             ['export_wert', 'import_wert', 'handelsvolumen_wert'],
