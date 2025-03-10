@@ -31,11 +31,10 @@ def create_nav_structure():
     return {
         "Überblick über Deutschlands Handel": {
             "Gesamtüberblick seit 2008 bis 2024": {
-                "Gesamter Export-, Import- und Handelsvolumen-Verlauf Deutschlands": "/gesamt-export-import-handelsvolumen",
-                "Monatlicher Handelsverlauf": "/monatlicher-handelsverlauf"
+                "Gesamter Export-, Import- und Handelsvolumen-Verlauf Deutschlands": "/gesamt-export-import-handelsvolumen"
             },
             "Überblick nach bestimmtem Jahr": {
-                "Monatlicher Handelsverlauf": "#",
+                "Monatlicher Handelsverlauf": "/monatlicher-handelsverlauf",
                 "Top 10 Handelspartner": "#",
                 "Länder mit größten Export- und Importzuwächsen (absolut)": "#",
                 "Länder mit größten Export- und Importzuwächsen (relativ)": "#",
