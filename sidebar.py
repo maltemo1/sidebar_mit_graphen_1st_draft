@@ -5,9 +5,22 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.graph_objects as go
 import numpy as np
+import math
 
-# CSV-Datei laden
+# CSV-Dateien laden
 df_gesamt_deutschland = pd.read_csv('data/1gesamt_deutschland.csv')
+df_gesamt_deutschland_monthly = pd.read_csv('data/gesamt_deutschland_monthly.csv')
+
+# Funktion zur Formatierung der Y-Achse für den monatlichen Graphen
+def formatter(value):
+    if value >= 1e9:
+        return f'{value / 1e9:.0f} Mrd'
+    elif value >= 1e6:
+        return f'{value / 1e6:.0f} Mio'
+    elif value >= 1e3:
+        return f'{value / 1e3:.0f} K'
+    else:
+        return str(value)
 
 # Dash-App erstellen
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -18,7 +31,8 @@ def create_nav_structure():
     return {
         "Überblick über Deutschlands Handel": {
             "Gesamtüberblick seit 2008 bis 2024": {
-                "Gesamter Export-, Import- und Handelsvolumen-Verlauf Deutschlands": "/gesamt-export-import-handelsvolumen"
+                "Gesamter Export-, Import- und Handelsvolumen-Verlauf Deutschlands": "/gesamt-export-import-handelsvolumen",
+                "Monatlicher Handelsverlauf": "/monatlicher-handelsverlauf"
             },
             "Überblick nach bestimmtem Jahr": {
                 "Monatlicher Handelsverlauf": "#",
@@ -103,7 +117,7 @@ app.layout = html.Div([
     ])
 ])
 
-# Callback, um den Graphen anzuzeigen, basierend auf der URL
+# Callback, um den Graphen für „Gesamter Export-, Import- und Handelsvolumen-Verlauf Deutschlands“ anzuzeigen
 @app.callback(
     Output('handel_graph', 'figure'),
     [Input('url', 'pathname')]
@@ -146,6 +160,58 @@ def update_graph(pathname):
         )
 
         return fig
+
+    # Callback für den monatlichen Handelsverlauf
+    elif pathname == "/monatlicher-handelsverlauf":
+        fig = go.Figure()
+
+        # Dropdown für die Auswahl des Jahres
+        year_selected = 2024  # Standardwert (du kannst dies auch interaktiv gestalten)
+        df_year_monthly = df_gesamt_deutschland_monthly[df_gesamt_deutschland_monthly['Jahr'] == year_selected]
+
+        for col, name, color in zip(
+            ['export_wert', 'import_wert', 'handelsvolumen_wert'],
+            ['Exportvolumen', 'Importvolumen', 'Gesamthandelsvolumen'],
+            ['#1f77b4', '#ff7f0e', '#2ca02c']
+        ):
+            fig.add_trace(go.Scatter(
+                x=df_year_monthly['Monat'],
+                y=df_year_monthly[col],
+                mode='lines+markers',
+                name=name,
+                line=dict(width=2, color=color),
+                hovertemplate=f'<b>{name}</b><br>Monat: %{{x}}<br>Wert: %{{y:,.0f}} €'
+            ))
+
+        # Maximale Werte bestimmen
+        max_value = df_year_monthly[['export_wert', 'import_wert', 'handelsvolumen_wert']].values.max()
+
+        # Auf nächste 50 Mrd aufrunden
+        rounded_max = math.ceil(max_value / 50e9) * 50e9
+
+        # Y-Achse in 50-Mrd-Schritten skalieren
+        tickvals = np.arange(0, rounded_max + 1, 50e9)
+        ticktext = [formatter(val) for val in tickvals]
+
+        # Layout für den Graphen
+        fig.update_layout(
+            title=f'Monatlicher Export-, Import- und Handelsverlauf Deutschlands im Jahr {year_selected}',
+            xaxis_title='Monat',
+            yaxis_title='Wert in €',
+            xaxis=dict(
+                tickmode='array',
+                tickvals=list(range(1, 13)),
+                ticktext=['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez']
+            ),
+            yaxis=dict(
+                tickvals=tickvals,
+                ticktext=ticktext
+            ),
+            legend=dict(title='Kategorie', bgcolor='rgba(255,255,255,0.7)')
+        )
+
+        return fig
+
     else:
         return {}  # Leeres Diagramm, wenn die URL nicht passt
 
