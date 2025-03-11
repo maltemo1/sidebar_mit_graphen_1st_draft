@@ -193,8 +193,8 @@ def update_graph(pathname, year_selected):
         # Auf nächste 50 Mrd aufrunden
         rounded_max = math.ceil(max_value / 50e9) * 50e9
 
-        # Y-Achse in 50-Mrd-Schritten skalieren
-        tickvals = np.arange(0, rounded_max + 1, 50e9)
+        # Y-Achse in 25-Mrd-Schritten skalieren
+        tickvals = np.arange(0, rounded_max + 1, 25e9)
         ticktext = [formatter(val) for val in tickvals]
 
         # Layout für den Graphen
