@@ -10,6 +10,9 @@ import math
 # CSV-Dateien laden
 df_gesamt_deutschland = pd.read_csv('data/1gesamt_deutschland.csv')
 df_gesamt_deutschland_monthly = pd.read_csv('data/gesamt_deutschland_monthly.csv')
+df_grouped = pd.read_csv('data/df_grouped.csv')
+aggregated_df = pd.read_csv('data/aggregated_df.csv')
+df_reduced = pd.read_csv('data/df_reduced.csv')
 
 # Funktion zur Formatierung der Y-Achse für den monatlichen Graphen
 def formatter(value):
@@ -193,8 +196,8 @@ def update_graph(pathname, year_selected):
         # Auf nächste 50 Mrd aufrunden
         rounded_max = math.ceil(max_value / 50e9) * 50e9
 
-        # Y-Achse in 50-Mrd-Schritten skalieren
-        tickvals = np.arange(0, rounded_max + 1, 50e9)
+        # Y-Achse in 25-Mrd-Schritten skalieren
+        tickvals = np.arange(0, rounded_max + 1, 25e9)
         ticktext = [formatter(val) for val in tickvals]
 
         # Layout für den Graphen
