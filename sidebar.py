@@ -38,7 +38,7 @@ def create_nav_structure():
             },
             "Überblick nach bestimmtem Jahr": {
                 "Monatlicher Handelsverlauf": "/monatlicher-handelsverlauf",
-                "Top 10 Handelspartner": "#",
+                "Top 10 Handelspartner": ""/top-10-handelspartner"",
                 "Länder mit größten Export- und Importzuwächsen (absolut)": "#",
                 "Länder mit größten Export- und Importzuwächsen (relativ)": "#",
                 "Top 10 Waren": "#",
@@ -124,6 +124,26 @@ app.layout = html.Div([
             ]), width=9)
         ])
     ])
+
+
+     # Hier wird der Codeblock für Subkategorie eingefügt
+    html.Div(id='content', children=[
+        html.H1("Top 10 Handelspartner Deutschlands"),
+        dcc.Dropdown(
+            id='jahr_dropdown_subkategorie',
+            options=[{'label': str(j), 'value': j} for j in sorted(df_grouped['Jahr'].unique())],
+            value=2024,  # Standardwert
+            clearable=False,
+            style={'width': '50%'}
+        ),
+        dcc.Graph(id='export_graph'),
+        dcc.Graph(id='import_graph'),
+        dcc.Graph(id='handelsvolumen_graph')
+    ])
+])
+
+
+    
 ])
 
 # Callback, um den Graphen für „Gesamter Export-, Import- und Handelsvolumen-Verlauf Deutschlands“ anzuzeigen
@@ -218,6 +238,46 @@ def update_graph(pathname, year_selected):
         )
 
         return fig
+
+    elif pathname == "/top-10-handelspartner":
+    top_10_export = df_grouped[(df_grouped['export_ranking'] <= 10) & (df_grouped['Jahr'] == year_selected)][["Land", "export_wert"]]
+    top_10_import = df_grouped[(df_grouped['import_ranking'] <= 10) & (df_grouped['Jahr'] == year_selected)][["Land", "import_wert"]]
+    top_10_handelsvolumen = df_grouped[(df_grouped['handelsvolumen_ranking'] <= 10) & (df_grouped['Jahr'] == year_selected)][["Land", "handelsvolumen_wert"]]
+
+    top_10_export = top_10_export.sort_values(by="export_wert", ascending=False)
+    top_10_import = top_10_import.sort_values(by="import_wert", ascending=False)
+    top_10_handelsvolumen = top_10_handelsvolumen.sort_values(by="handelsvolumen_wert", ascending=False)
+
+    fig_export = go.Figure([go.Bar(
+        x=top_10_export["Land"],
+        y=top_10_export["export_wert"],
+        text=[formatter(v) for v in top_10_export["export_wert"]],
+        textposition='auto',
+        marker=dict(color='blue')
+    )])
+    fig_export.update_layout(title="Top 10 Exportländer", xaxis_title="Land", yaxis_title="Exportwert in €")
+
+    fig_import = go.Figure([go.Bar(
+        x=top_10_import["Land"],
+        y=top_10_import["import_wert"],
+        text=[formatter(v) for v in top_10_import["import_wert"]],
+        textposition='auto',
+        marker=dict(color='orange')
+    )])
+    fig_import.update_layout(title="Top 10 Importländer", xaxis_title="Land", yaxis_title="Importwert in €")
+
+    fig_handelsvolumen = go.Figure([go.Bar(
+        x=top_10_handelsvolumen["Land"],
+        y=top_10_handelsvolumen["handelsvolumen_wert"],
+        text=[formatter(v) for v in top_10_handelsvolumen["handelsvolumen_wert"]],
+        textposition='auto',
+        marker=dict(color='green')
+    )])
+    fig_handelsvolumen.update_layout(title="Top 10 Handelsvolumen", xaxis_title="Land", yaxis_title="Handelsvolumen in €")
+
+    return fig_export, fig_import, fig_handelsvolumen
+
+    
 
     else:
         return {}  # Leeres Diagramm, wenn die URL nicht passt
