@@ -143,8 +143,6 @@ app.layout = html.Div([
 ])
 
 
-    
-])
 
 # Callback, um den Graphen für „Gesamter Export-, Import- und Handelsvolumen-Verlauf Deutschlands“ anzuzeigen
 @app.callback(
