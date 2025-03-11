@@ -38,7 +38,7 @@ def create_nav_structure():
             },
             "Überblick nach bestimmtem Jahr": {
                 "Monatlicher Handelsverlauf": "/monatlicher-handelsverlauf",
-                "Top 10 Handelspartner": ""/top-10-handelspartner"",
+                "Top 10 Handelspartner": "/top-10-handelspartner",
                 "Länder mit größten Export- und Importzuwächsen (absolut)": "#",
                 "Länder mit größten Export- und Importzuwächsen (relativ)": "#",
                 "Top 10 Waren": "#",
